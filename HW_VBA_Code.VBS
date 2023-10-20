@@ -1,0 +1,140 @@
+
+Sub homeworkabc()
+
+For Each ws In Worksheets
+    
+lastrow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+    
+ws.Cells(1, "I").Value = "Ticker"
+ws.Cells(1, "J").Value = "Yearly Change"
+ws.Cells(1, "K").Value = "Percent Change"
+ws.Cells(1, "L").Value = "Total Stock Volume"
+
+x = 2
+
+    For i = 2 To lastrow
+        
+        If ws.Cells(i, "A").Value <> ws.Cells(i + 1, "A").Value Then
+            ws.Cells(x, "I").Value = ws.Cells(i, "A").Value
+            x = x + 1
+            
+        End If
+
+    Next i
+
+Total = 0
+y = 2
+    For j = 250 To lastrow
+        
+        If ws.Cells(j, "A").Value <> ws.Cells(j + 1, "A").Value Then
+        
+            Total = Total + ws.Cells(j, "G")
+            
+            ws.Cells(y, "L") = Total
+            
+            Total = 0
+            
+            y = y + 1
+        
+        End If
+        
+        Total = Total + ws.Cells(j, 7).Value
+        
+    Next j
+    
+Z = 2
+For k = 2 To lastrow
+
+If ws.Cells(k, "A") = ws.Cells(k + 1, "A") And ws.Cells(k, "A") <> ws.Cells(k - 1, "A") Then
+    openvalue = ws.Cells(k, "C")
+    
+ElseIf ws.Cells(k, "A") <> ws.Cells(k + 1, "A") Then
+
+    closevalue = ws.Cells(k, "F")
+    
+    endvalue = openvalue - closevalue
+    
+    ws.Cells(Z, "J") = -endvalue
+    
+    tempval = endvalue / openvalue
+    
+    ws.Cells(Z, "K") = -(tempval)
+    
+      Z = Z + 1
+    
+    openvalue = 0
+    
+    closevalue = 0
+
+
+End If
+    
+Next k
+
+lastrowticker = ws.Cells(Rows.Count, 9).End(xlUp).Row
+
+For m = 2 To lastrow
+
+    If ws.Cells(m, "J") > 0 Then
+    
+        ws.Cells(m, "J").Interior.ColorIndex = 4
+    
+    ElseIf ws.Cells(m, "J") < 0 Then
+    
+         ws.Cells(m, "J").Interior.ColorIndex = 3
+         
+    Else
+    
+        ws.Cells(m, "J").Interior.ColorIndex = 2
+    
+    End If
+
+Next m
+
+ws.Range("K2:K" & lastrowticker).Style = "Percent"
+
+ws.Cells(1, "O") = "Ticker"
+ws.Cells(1, "P") = "Value"
+ws.Cells(2, "N") = "Greatest % Increase"
+ws.Cells(3, "N") = "Greatest % Decrease"
+ws.Cells(4, "N") = "Greatest Total Volume"
+
+grincrease = 0
+grdecrease = 0
+grstock = 0
+
+For n = 2 To lastrowticker
+
+    If ws.Cells(n, "J") > grincrease Then
+    
+        grincrease = ws.Cells(n, "J")
+        grinticker = ws.Cells(n, "I")
+    
+    End If
+
+    If ws.Cells(n, "J") < grdecrease Then
+    
+        grdecrease = ws.Cells(n, "J")
+        grdrticker = ws.Cells(n, "I")
+    
+    End If
+    
+    If ws.Cells(n, "K") > grstock Then
+        grstock = ws.Cells(n, "K")
+        grvalticker = ws.Cells(n, "I")
+    
+    End If
+    
+Next n
+
+ws.Cells(2, "O") = grinticker
+ws.Cells(3, "O") = grdrticker
+ws.Cells(4, "O") = grvalticker
+
+ws.Cells(2, "P") = grincrease
+ws.Cells(3, "P") = grdecrease
+ws.Cells(4, "P") = grstock
+
+Next ws
+
+End Sub
